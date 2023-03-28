@@ -25,5 +25,12 @@ export default defineConfig({
     unocss(),
     solidJs()
   ],
-  
+  // output: 'server',
+  // adapter: envAdapter(),
+  // vite: {
+  //   plugins: [
+  //     process.env.OUTPUT == 'vercel' && vercelDisableBlocks(),
+  //     process.env.OUTPUT == 'netlify' && vercelDisableBlocks(),
+  //   ]
+  // },
 });

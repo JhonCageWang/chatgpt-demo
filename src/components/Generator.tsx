@@ -5,6 +5,9 @@ import MessageItem from './MessageItem'
 import SystemRoleSettings from './SystemRoleSettings'
 import { generateSignature } from '@/utils/auth'
 import { useThrottleFn } from 'solidjs-use'
+import {generatePayload, parseOpenAIStream } from '@/utils/openAI'
+const apiKey = import.meta.env.OPENAI_API_KEY
+const baseUrl = (import.meta.env.OPENAI_API_BASE_URL || 'https://api.openai.com').trim().replace(/\/$/,'')
 
 export default () => {
   let inputRef: HTMLTextAreaElement
@@ -76,19 +79,30 @@ export default () => {
         })
       }
       const timestamp = Date.now()
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        body: JSON.stringify({
-          messages: requestMessageList,
-          time: timestamp,
-          pass: storagePassword,
-          sign: await generateSignature({
-            t: timestamp,
-            m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
-          }),
-        }),
-        signal: controller.signal,
-      })
+      // const response = await fetch('/api/generate', {
+      //   method: 'POST',
+      //   body: JSON.stringify({
+      //     messages: requestMessageList,
+      //     time: timestamp,
+      //     pass: storagePassword,
+      //     sign: await generateSignature({
+      //       t: timestamp,
+      //       m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
+      //     }),
+      //   }),
+      //   signal: controller.signal,
+      // })
+
+
+      let newkey = "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";
+      const initOptions = generatePayload(newkey,requestMessageList)
+       // @ts-ignore
+      let response =  await fetch(`http://47.88.61.19:8080/v1/chat/completions`, initOptions) as Response
+      // parseOpenAIStream(response)
+      // let t = await response.json();
+      // parseOpenAIStream(response)
+      response = new Response(parseOpenAIStream(response))
+      
       if (!response.ok) {
         throw new Error(response.statusText)
       }
