@@ -94,7 +94,7 @@ export default () => {
       // })
 
 
-      let newkey = "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";
+      let newkey = "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";
       const initOptions = generatePayload(newkey,requestMessageList)
        // @ts-ignore
       let response =  await fetch(`http://47.88.61.19:8080/v1/chat/completions`, initOptions) as Response
